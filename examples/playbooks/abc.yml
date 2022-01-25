@@ -1,0 +1,47 @@
+---
+# YAML documents begin with the document separator ---
+
+# The minus in YAML this indicates a list item.  The playbook contains a list 
+# of plays, with each play being a dictionary
+-
+ 
+  # Hosts: where our play will run and options it will run with
+  hosts: localhost
+  gather_facts: false
+
+  # Vars: variables that will apply to the play, on all target systems
+  vars:
+      DDVE_public_IP : 34.107.103.175
+      destination_port: 3009
+      Instance_id : 8529834022607504819
+      S3_bucket_name : bucket_for_ddve_6
+
+  # Tasks: the list of tasks that will be executed within the playbook
+  tasks:
+     - name: login access token
+       uri:
+          url: https://{{ DDVE_public_IP }}:{{ destination_port }}/{{ resource_path }}
+          method: POST
+          headers:
+              Content-Type: application/json
+          body_format: json
+          body:
+              username: sysadmin
+              password: {{ Instance_id }}
+        return_content: yes
+        ignore_errors: yes
+        register: rest_post
+        vars:
+            resource_path: rest/v1.0/auth
+
+      - name: DEBUG / GOT INFO
+        debug:
+            msg: "{{ rest_post.json }}"
+        when: rest_post.status ==  201
+
+  # Handlers: the list of handlers that are executed as a notify key from a task
+
+  # Roles: list of roles to be imported into the play
+
+# Three dots indicate the end of a YAML document
+...

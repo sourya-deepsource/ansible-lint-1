@@ -1,3 +1,4 @@
 ---
-- name: Use local module 1
+# TODO: change to deregister entire group?
+- name: "Deregister SMAC w/ location id {{ _smac['locationID'] }} and VWA {{ _vwa['locationID'] }} "
   test_module_1_failed_complete:
